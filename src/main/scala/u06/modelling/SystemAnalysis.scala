@@ -11,6 +11,27 @@ object SystemAnalysis:
 
     def complete(p: Path[S]): Boolean = normalForm(p.last)
 
+    def isReachable(initial: S, goal: S => Boolean): Boolean =
+      var visited = Set[S]()
+      var queue = List(initial)
+
+      while queue.nonEmpty do
+        val current = queue.head
+        queue = queue.tail
+        if goal(current) then return true
+        if !visited.contains(current) then
+          visited += current
+          queue ++= system.next(current).filter(!visited.contains(_))
+
+      false
+
+    def findDeadlocks(initial: S): Set[S] =
+      var visisted = Set[S]()
+      var queue = List(initial)
+      var deadlocks = Set[S]()
+      ???
+
+
     // paths of exactly length `depth`
     def paths(s: S, depth: Int): Seq[Path[S]] = depth match
       case 0 => LazyList()
