@@ -24,18 +24,19 @@ object StochasticSimulationMetrics:
     def prune(n: Int): Simulations[S] = self map (_.take(n))
     def pruneAllAt(s: S): Simulations[S] = self map (trace => trace.takeWhile(_.state != s))
     def getAverageTime: Double = if (self.nonEmpty) self.map(_.last.time).sum / self.size else 0.0
-
-    def getRelativeTimeSpentAt(s: S): Double =
-      val totalStateTimes = self.map(trace => trace.intervals.collect {
-        case (`s`, t) => t
-      }.sum).sum / self.size
-      totalStateTimes / self.getAverageTime
+    def getAverageSpentTimeAt(s: S): Double = self.map(trace => trace.intervals.collect {
+      case (`s`, t) => t
+    }.sum).sum / self.size
+    def getRelativeTimeSpentAt(s: S): Double = getAverageSpentTimeAt(s) / self.getAverageTime
 
 object TryStochasticChannelSimulationMetrics:
   import StochasticSimulationMetrics.*
   import StochasticSimulationMetrics.given
 
   @main def mainStochasticChannelSimulationMetrics =
-      val timeSpentFailing = stocChannel.simulateNRuns(50, IDLE).pruneAllAt(DONE)
-        .getRelativeTimeSpentAt(FAIL) * 100
-      println(s"Percentage of time spent in FAIL state: $timeSpentFailing% ")
+    val successful = stocChannel.simulateNRuns(50, IDLE).pruneAllAt(DONE)
+    val avgTime = successful.getAverageTime
+    val avgTimeSpentFailing = successful.getAverageSpentTimeAt(FAIL)
+    val percentageTimeFailing = successful.getRelativeTimeSpentAt(FAIL) * 100
+
+    println(s"Percentage of time spent in FAIL state: $percentageTimeFailing % ($avgTimeSpentFailing s / $avgTime s)")
