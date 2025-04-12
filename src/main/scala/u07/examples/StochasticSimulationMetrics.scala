@@ -24,9 +24,7 @@ object StochasticSimulationMetrics:
     def prune(n: Int): Simulations[S] = self map (_.take(n))
     def pruneAllAt(s: S): Simulations[S] = self map (trace => trace.takeWhile(_.state != s))
     def getAverageTime: Double = if (self.nonEmpty) self.map(_.last.time).sum / self.size else 0.0
-    def getAverageSpentTimeAt(s: S): Double = self.map(trace => trace.intervals.collect {
-      case (`s`, t) => t
-    }.sum).sum / self.size
+    def getAverageSpentTimeAt(s: S): Double = self.map(trace => trace.intervals.collect { case (`s`, t) => t }.sum).sum / self.size
     def getRelativeTimeSpentAt(s: S): Double = getAverageSpentTimeAt(s) / self.getAverageTime
 
 object TryStochasticChannelSimulationMetrics:
