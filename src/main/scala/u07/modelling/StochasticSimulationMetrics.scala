@@ -1,12 +1,11 @@
-package scala.u07.examples
+package scala.u07.modelling
 
 import u07.examples.StochasticChannel.State.*
+import u07.examples.StochasticChannel.{State, stocChannel}
 import u07.modelling.CTMC
 import u07.modelling.CTMCSimulation.*
-import u07.examples.StochasticChannel.{State, stocChannel}
 
 import java.util.Random
-
 object StochasticSimulationMetrics:
   type Simulations[S] = LazyList[Trace[S]]
   given Random = new Random
@@ -16,9 +15,8 @@ object StochasticSimulationMetrics:
       LazyList.range(0, n) map (i => self.newSimulationTrace(s0, rnd))
 
   extension [S](self: Trace[S])
-    def intervals: Iterator[(S, Double)] = self.toList.sliding(2).collect {
+    def intervals: Iterator[(S, Double)] = self.toList.sliding(2).collect:
       case List(e1: Event[S], e2: Event[S]) => (e1.state, e2.time - e1.time)
-    }
 
   extension [S](self: Simulations[S])
     def prune(n: Int): Simulations[S] = self map (_.take(n))
@@ -28,8 +26,7 @@ object StochasticSimulationMetrics:
     def getRelativeTimeSpentAt(s: S): Double = getAverageSpentTimeAt(s) / self.getAverageTime
 
 object TryStochasticChannelSimulationMetrics:
-  import StochasticSimulationMetrics.*
-  import StochasticSimulationMetrics.given
+  import StochasticSimulationMetrics.{*, given}
 
   @main def mainStochasticChannelSimulationMetrics =
     val successful = stocChannel.simulateNRuns(50, IDLE).pruneAllAt(DONE)
