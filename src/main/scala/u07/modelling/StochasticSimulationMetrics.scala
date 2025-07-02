@@ -15,8 +15,8 @@ object StochasticSimulationMetrics:
       LazyList.range(0, n) map (i => self.newSimulationTrace(s0, rnd))
 
   extension [S](self: Trace[S])
-    def intervals: Iterator[(S, Double)] = self.toList.sliding(2).collect:
-      case List(e1: Event[S], e2: Event[S]) => (e1.state, e2.time - e1.time)
+    def intervals: Iterator[(S, Double)] = self.sliding(2).collect:
+      case LazyList(e1: Event[S], e2: Event[S]) => (e1.state, e2.time - e1.time)
 
   extension [S](self: Simulations[S])
     def prune(n: Int): Simulations[S] = self map (_.take(n))
