@@ -22,7 +22,7 @@ object StochasticReadersAndWriters extends App:
     Trn(MSet(P7), m => 0.2, MSet(P1, P5), MSet()),
   )
 
-  println:
-    toCTMC(spn).newSimulationTrace(MSet(P1, P1, P1, P5), new Random)
-      .take(20)
-      .toList.mkString("\n")
+//  println:
+//    toCTMC(spn).newSimulationTrace(MSet(P1, P1, P1, P5), new Random)
+//      .take(20)
+//      .toList.mkString("\n")
