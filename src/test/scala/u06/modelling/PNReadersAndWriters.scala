@@ -47,7 +47,7 @@ class PNReadersAndWriters extends AnyFunSuite:
 
   test("A blocked writer must eventually be unblocked"):
     def writerEnabled(m: MSet[Place]): Boolean =
-      pnRW.next(m).exists(nextMarking => nextMarking(P7) > 0)
+      pnRW.next(m).exists(nextMarking => nextMarking(P7) == 0)
 
     val marking = MSet(P1, P1, P7)
 
